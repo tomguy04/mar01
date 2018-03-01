@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<!-- <h1>Welcome {{request.session.first_name}}</h1>
+	your registered. -->
+	
+	Welcome {{user}} 
+	<!-- <a href="/logout">Logout</a>-->
+	<br><a href="/travels/add">add travel plan</a>
+	<br>Your Trip Schedules:
+	{%for data in my_trips%}
+		<p>	
+		<!-- {{data.trip.destination}}  -->
+		<a href="/travels/destination/{{data.trip.id}}">{{data.trip.destination}}</a>
+		{{data.trip.TravelDateFrom}} 
+		{{data.trip.TravelDateTo}} 
+		{{data.trip.description}}
+		</p>
+	{%endfor%}
+	{%for data in trip_joined%}
+		<p>	
+		<a href="/travels/destination/{{data.trip.id}}">{{data.trip.destination}}</a>
+		<!-- {{data.trip.destination}}  -->
+		{{data.trip.TravelDateFrom}} 
+		{{data.trip.TravelDateTo}} 
+		{{data.trip.description}}
+		</p>
+	{%endfor%}
+	<br><br>
+
+<!--             'other_trips': Trip.objects.exclude(admin_id=request.session['id']) -->
+	<!-- if there is data in trip_joined, do these loops, if not, show all otherdata -->
+	{%if trip_joined|length %}
+		{%for data in other_trips%}
+			<p>	{{data.admin.name}} 
+			<a href="/travels/destination/{{data.trip.id}}">{{data.trip.destination}}</a>
+			<!-- {{data.trip.destination}}  -->
+			{{data.trip.TravelDateFrom}} 
+			{{data.trip.TravelDateTo}} 
+			{{data.trip.description}}  <a href="/jointrip/{{data.trip.id}}/{{request.session.id}}">Join</a>
+			</p>
+		{%endfor%}
+
+
+
+
+	{%else%}
+	<h2>Other Users Trips when I haven't joined any Trips</h2>
+		{%for data in other_trips%}
+			<p>{{data.admin.name}} 
+				<!-- {{data.trip.destination}}  -->
+				<a href="/travels/destination/{{data.trip.id}}">{{data.trip.destination}}</a>	
+			{{data.trip.TravelDateFrom}} 
+			{{data.trip.TravelDateTo}} 
+			{{data.trip.description}}  <a href="/jointrip/{{data.trip.id}}/{{request.session.id}}">Join</a>
+			</p>
+		{%endfor%}
+	{%endif%}
+	
+
+	
+</body>
+</html>

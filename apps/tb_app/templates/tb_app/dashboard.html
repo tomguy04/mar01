@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<!-- <h1>Welcome {{request.session.first_name}}</h1>
+	your registered. -->
+	
+	Welcome {{user}} 
+	<a href="/logout">Logout</a>
+	<br><a href="/travels/add">add travel plan</a>
+	<br><h2>Your Trip Schedules:</h2>
+	{%for data in my_trips%}
+		<p> 
+		<a href="/travels/destination/{{data.id}}">{{data.destination}}</a>
+		{{data.TravelDateFrom}} 
+		{{data.TravelDateTo}} 
+		{{data.description}}
+		</p>
+	{%endfor%}
+
+
+		<!-- trips the user joined -->
+	{%for data in trips_joined%} 
+		<p> 
+		<a href="/travels/destination/{{data.trip.id}}">{{data.trip.destination}}</a>
+		{{data.trip.TravelDateFrom}} 
+		{{data.trip.TravelDateTo}} 
+		{{data.trip.description}}
+		</p>
+	{%endfor%}
+	<!-- class Follow(models.Model): 
+    trip = models.ForeignKey(TripSchedule, related_name = 'users')
+    follower= models.ForeignKey(User, related_name = 'trips') -->
+
+
+	<br><br>
+	<h2>Other User Trips:</h2>
+	{%for data in other_trips%}
+		<p> 
+		{{data.user.name}}  
+		<a href="/travels/destination/{{data.id}}">{{data.destination}}</a>
+		{{data.TravelDateFrom}} 
+		{{data.TravelDateTo}} 
+		{{data.description}}  
+		<a href="/jointrip/{{data.id}}/{{request.session.id}}">Join</a>
+		</p>
+	{%endfor%}
+
+
+	
+
+	
+</body>
+</html>

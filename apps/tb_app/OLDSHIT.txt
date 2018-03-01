@@ -1,0 +1,92 @@
+def travels(request):
+    if 'id' in request.session:
+        print "***************id is in session"
+        u = User.objects.get(id = request.session['id'])
+        user_name = u.name
+        print "user name is " + user_name
+
+        # all of my TripUser objects.  Contains a trip id and my user id.
+        my_trips = TripUser.objects.filter(user_id=request.session['id'])
+
+        # array for my TripUser trip_ids
+        mylist = []
+        for trip in my_trips:
+            mylist.append(trip.trip_id)
+        
+        for trip in mylist:
+            print "**************************TRIPID " + str(trip)
+        uid =  request.session['id']
+
+        # an array for trip ids that are not mine.
+        notmyids=[]
+
+        # every TripSchedule object - v1 solution
+        everytrip = TripSchedule.objects.all() 
+        everyTripUserObject = TripUser.objects.all()
+        everyTripUserObjectUnique = []
+
+        # for data in everyTripUserObject:
+        #     print data.trip_id
+        #     if data.trip not in everyTripUserObjectUnique:
+        #         everyTripUserObjectUnique.append(data.trip)
+        # for data in everyTripUserObjectUnique:
+        #     print "*****************data " + str(data.trip)
+
+        
+        # an array for TripSchedule objects that are not mine.
+        notmytrips = []
+        theuser = []
+        for trip in everytrip:
+        # for trip in everyTripUserObjectUnique:
+            if trip.id not in mylist:
+            # if trip.trip_id not in mylist:
+                # print trip.description
+                # print trip.trip_id
+                notmytrips.append(trip)
+                # u1 = TripUser.objects.get(id=trip.id).user.name
+                # theuser.append(u1)
+
+        context = {
+            'user' : user_name,
+            'id': request.session['id'],
+            'mytrips' : TripUser.objects.filter(user_id=request.session['id']),
+            'alltrips' : notmytrips,
+            'allusers' : theuser
+        }
+        return render(request, "tb_app/dashboard.html", context) 
+
+def getatrip(request):
+    return render(request, "tb_app/travelsadd.html")
+
+def processtrip(request): 
+    # errors = TripSchedule.objects.basic_validator(request.POST)
+    # if len(errors):
+    #     for tag, error in errors.iteritems():
+    #         messages.error(request, error, extra_tags=tag)
+    #     return redirect('/travels/add')
+    # else:
+    trip1 = TripSchedule(destination = request.POST['destination'], description = request.POST['description'], TravelDateFrom = request.POST['TravelDateFrom'], TravelDateTo = request.POST['TravelDateTo'])
+    trip1.save()
+    user1 = User.objects.get(id=request.session['id'])
+    # user1.trip.add(trip1.id)
+    TripUser.objects.create(user = user1, trip = trip1)
+    return redirect ('/travels')
+
+def jointrip(request,tid,uid):
+    trip1 = TripSchedule.objects.get(id=tid)
+    trip1.save()
+    u1 = User.objects.get(id = uid)
+    u1.save()
+    TripUser.objects.create(user = u1, trip = trip1)
+    return redirect ('/travels')
+
+def destination(request,tid):
+    t1 = TripSchedule.objects.get(id=tid)
+    u1 = TripUser.objects.get(id=tid).user.name
+    u1id = TripUser.objects.get(id=tid).user.id
+    # o1 = TripUser.objects.get(id=tid).user.id.exclude(TripUser.objects.get(id=tid).user.id)
+    context={
+        'trip':t1,
+        'user':u1
+    }
+    return render(request, "tb_app/destination.html", context)
